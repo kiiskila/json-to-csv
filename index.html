@@ -1,0 +1,56 @@
+<html>
+  <button id="upload-button">Upload JSON File</button>
+
+  <script>
+    const getJsonUpload = () =>
+      new Promise((resolve) => {
+        const inputFileElement = document.createElement("input");
+        inputFileElement.setAttribute("type", "file");
+        inputFileElement.setAttribute("multiple", "true");
+        inputFileElement.setAttribute("accept", ".json");
+
+        inputFileElement.addEventListener(
+          "change",
+          async (event) => {
+            const { files } = event.target;
+            if (!files) {
+              return;
+            }
+
+            const filePromises = [...files].map((file) => file.text());
+
+            resolve(await Promise.all(filePromises));
+          },
+          false
+        );
+        inputFileElement.click();
+      });
+
+    document.getElementById("upload-button").onclick = async () => {
+      const jsonFiles = await getJsonUpload();
+      const jsonObj = JSON.parse(jsonFiles);
+      var json = jsonObj.resource;
+      var fields = Object.keys(json[0]);
+      var replacer = function (key, value) {
+        return value === null ? "" : value;
+      };
+      var csv = json.map(function (row) {
+        return fields
+          .map(function (fieldName) {
+            return JSON.stringify(row[fieldName], replacer);
+          })
+          .join(",");
+      });
+      csv.unshift(fields.join(",")); // add header column
+      csv = csv.join("\r\n");
+
+      var hiddenElement = document.createElement("a");
+      hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+      hiddenElement.target = "_blank";
+
+      //provide the name for the CSV file to be downloaded
+      hiddenElement.download = "download.csv";
+      hiddenElement.click();
+    };
+  </script>
+</html>
