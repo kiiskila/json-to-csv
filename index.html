@@ -1,5 +1,9 @@
 <html>
-  <button id="upload-button">Upload JSON File</button>
+  <div class="topnav">
+    <a class="active" href="home.html">JSON to CSV</a>
+    <a href="index.html">Octoparse Link Generator</a>
+  </div>
+  <button id="upload-button">Upload</button>
 
   <script>
     const getJsonUpload = () =>
@@ -49,8 +53,109 @@
       hiddenElement.target = "_blank";
 
       //provide the name for the CSV file to be downloaded
-      hiddenElement.download = "download.csv";
+      hiddenElement.download = "mytest.csv";
       hiddenElement.click();
+
+      // ------------------------------------------------------------------------------------------------
+
+      var myBooks = jsonObj.resource;
+      // EXTRACT VALUE FOR HTML HEADER.
+      // ('Book ID', 'Book Name', 'Category' and 'Price')
+      var col = [];
+      for (var i = 0; i < myBooks.length; i++) {
+        for (var key in myBooks[i]) {
+          if (col.indexOf(key) === -1) {
+            col.push(key);
+          }
+        }
+      }
+
+      // CREATE DYNAMIC TABLE.
+      var table = document.createElement("table");
+
+      // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+      var tr = table.insertRow(-1); // TABLE ROW.
+
+      for (var i = 0; i < col.length; i++) {
+        var th = document.createElement("th"); // TABLE HEADER.
+        th.innerHTML = col[i];
+        tr.appendChild(th);
+      }
+
+      // ADD JSON DATA TO THE TABLE AS ROWS.
+      for (var i = 0; i < myBooks.length; i++) {
+        tr = table.insertRow(-1);
+
+        for (var j = 0; j < col.length; j++) {
+          var tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = myBooks[i][col[j]];
+        }
+      }
+
+      // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+      var divContainer = document.getElementById("showData");
+      divContainer.innerHTML = "";
+      divContainer.appendChild(table);
     };
   </script>
+
+  <p id="showData"></p>
 </html>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  #upload-button {
+    padding: 10px;
+    margin: 15px;
+  }
+
+  th,
+  td,
+  p,
+  input {
+    font: 14px Verdana;
+  }
+  table,
+  th,
+  td {
+    border: solid 1px #ddd;
+    border-collapse: collapse;
+    padding: 2px 3px;
+    text-align: center;
+  }
+  th {
+    font-weight: bold;
+  }
+
+  .topnav {
+    background-color: #333;
+    overflow: hidden;
+  }
+
+  /* Style the links inside the navigation bar */
+  .topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  /* Change the color of links on hover */
+  .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+
+  /* Add a color to the active/current link */
+  .topnav a.active {
+    background-color: #04aa6d;
+    color: white;
+  }
+</style>
