@@ -26,6 +26,13 @@
     </select>
     <button onclick="generateLinks()">Go!</button>
     <br />
+    <input type="radio" name="size" value="10" id="10" checked />
+    <label for="10">Small</label>
+    <input type="radio" name="size" value="30" id="30" />
+    <label for="30">Medium</label>
+    <input type="radio" name="size" value="60" id="60" />
+    <label for="60">Large</label>
+    <br />
     <button onclick="copyDivToClipboard()">Copy to Clipboard!</button>
   </div>
 
@@ -38,11 +45,14 @@
       var provText = prov.options[prov.selectedIndex].text;
       var category = document.getElementById("link").value;
 
+      var size = document.querySelector('input[name="size"]:checked').value;
+      console.log(size);
+
       var outputDiv = document.getElementById("output");
       outputDiv.innerText = "";
 
       for (let i = 0; i <= 25; i++) {
-        for (let j = 1; j <= 60; j++) {
+        for (let j = 1; j <= size; j++) {
           outputDiv.innerText +=
             "https://www.yellowpages.ca/search/si/" +
             j +
